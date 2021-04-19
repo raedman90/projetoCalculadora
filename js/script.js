@@ -1,104 +1,70 @@
-//-- Miniprojeto Calculadora --
-//-- Equipe: Moacir, Israel Oliveira, Bruno Lacerda, Rafael Alexandre, Vinícius Ribeiro e Alexsander Lins --
-
-// ----- 1ª VERSÃO --------
-
-let operador1, operador2, operacao, estado;
-let disp;
-
-// Função: Inicializar a tela
-function inicializaPagina(){
-    disp = document.getElementById("tela");
-    reset();
-}
-window.addEventListener("load", inicializaPagina);  //-- É acionado quando todos os recursos terminaram o carregamento --
-
-// Função: Resetar
-function reset(){
-    operador1 = "0";    //-- O 1º valor --
-    operador2 = "0";    //-- O 2º valor --
-    operacao = null;    //-- Qual operação será efetuada
-    estado = 1;         //-- Enquanto estiver no estado 1 os valores serão armazenados no 'operador1'
-    disp.value = "0";   //-- O display começa zerado --
-}
-
-//-- Função para detectar os clicks nos botões --
-function btnClick(objeto){    
-    let me = objeto.target.value;   //-- Variável 'me' recebe o valor do objeto que foi clicado
-    
-    //--Se clicar em 'C' vai chamar a função para resetar tudo --
-    if (me == 'C'){
-        reset();
-        return;
-    }
-    //-- Se clicar em '=' a operação será efetuada entre os operadores 1 e 2 --
-    if (me == "="){
-        let resultao;
-
-        //-- Para realizar a operação matemática os operadores são antes convertidos para número de ponto flutuante 
-        switch (operacao){
-            case '+':
-                resultao = parseFloat(operador1) + parseFloat(operador2);
-                break;
-            case '-':
-                resultao = parseFloat(operador1) - parseFloat(operador2);
-                break;
-            case '*':
-                resultao = parseFloat(operador1) * parseFloat(operador2);
-                break;
-            case '/':
-                resultao = parseFloat(operador1) / parseFloat(operador2);
-                break;
-        }        
-        disp.value = resultao.toString();    //-- O resultado é convertido para tipo string para ser exibido no display --
-        estado = 1;                       
-        operador1 = resultao;                //-- O operador1 recebe o valor do resultado da última operação   
-        return;        
-    }
-
-    //-- Se 
-    if ((me == '+') || (me == '-') || (me == '*') ||(me == '/')){
-        operacao = me;
-        estado = 2;     //-- Enquanto estiver no estado 2 os valores serão armazenados no 'operador2' --
-        operador2 = 0;        
-        return;
-    }
-
-    if ((me == '.') || (me >= '0') && (me <= '9')){
-        if(estado == 1){
-            operador1 += me;            
-            disp.value = parseFloat(operador1).toString();  //-- Converte para número e depois para string para exibir no display
-        } else if (estado == 2){
-            operador2 += me;            
-            disp.value = parseFloat(operador2).toString();  //-- Converte para número e depois para string para exibir no display
-        }
-    }
+window.onload = function() {
+  
+  let botoes = [];
+  
+  // Pegando os botões
+  
+  // Botões específicos
+  
+  let tela = document.getElementById("tela");
+  let resultado = document.getElementById("resultado");
+  let limparTela = document.getElementById("limparTela");
+  let apagarAnterior = document.getElementById("apagarAnterior");
+  
+  // Números
+  
+  botoes.push(document.getElementById("num0"));
+  botoes.push(document.getElementById("num1"));
+  botoes.push(document.getElementById("num2"));
+  botoes.push(document.getElementById("num3"));
+  botoes.push(document.getElementById("num4"));
+  botoes.push(document.getElementById("num5"));
+  botoes.push(document.getElementById("num6"));
+  botoes.push(document.getElementById("num7"));
+  botoes.push(document.getElementById("num8"));
+  botoes.push(document.getElementById("num9"));
+  
+  // Operações
+  
+  botoes.push(document.getElementById("soma"));
+  botoes.push(document.getElementById("subtracao"));
+  botoes.push(document.getElementById("divisao"));
+  botoes.push(document.getElementById("multiplicacao"));
+  
+  // Ponto
+  
+  botoes.push(document.getElementById("ponto"));
+  
+  // Funções
+  
+  // Adicionando evento aos botões
+  
+  for(const botao of botoes){
+    botao.addEventListener("click", mostrarTela);
+  }
+  
+  function mostrarTela(){
+    tela.value += this.value;
+  }
+  
+  // Resultado
+  
+  resultado.onclick = function(){
+    let valorTela = eval(tela.value);
+    tela.value = valorTela;
+  };
+  
+  // Limpar a tela 
+  limparTela.onclick = function() {
+    tela.value = "0"; 
+  }
+  
+  // Apagar dígito anterior
+  apagarAnterior.onclick = () => {
+    let valorTela = tela.value.substring(0, tela.value.length - 1);
+    tela.value = valorTela;
+  };
+  
 }
 
-//-- Mapear os botões numéricos --
-for (let i = 0; i < 10; i++) {
-    const elementId = `num${i}`;   
-    const numericBtn = document.getElementById(elementId);    
-    numericBtn.addEventListener("click", btnClick);
-}
 
-//-- Mapear a tecla igual --
-const igual = document.getElementById("resultado");
-igual.addEventListener("click", btnClick);
-
-//-- Mapear a tecla Clear para limpar a tela --
-const clear = document.getElementById("limparTela");
-clear.addEventListener("click", btnClick);
-
-//-- Mapear os botões de operações --
-const divisao = document.getElementById("divisao");
-divisao.addEventListener("click", btnClick);
-
-const multiplicacao = document.getElementById("multiplicacao");
-multiplicacao.addEventListener("click", btnClick);
-
-const subtracao = document.getElementById("subtracao");
-subtracao.addEventListener("click", btnClick);
-
-const soma = document.getElementById("soma");
-soma.addEventListener("click", btnClick);
